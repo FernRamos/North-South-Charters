@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>North South Charters | Crystal River, FL</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <nav class="nav">
+      <div class="logo">North South Charters</div>
+      <div class="links">
+        <a href="#trips">Trips</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#contact" class="btn">Book Now</a>
+      </div>
+    </nav>
+
+    <div class="hero-content">
+      <h1>Crystal River Fishing Charters</h1>
+      <p>Inshore • Nearshore • Scalloping • Family-friendly trips</p>
+      <a class="btn big" href="#contact">Check Availability</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="trips" class="section">
+      <h2>Trips</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>Inshore Fishing</h3>
+          <p>Redfish, trout, snook — perfect for all skill levels.</p>
+        </div>
+        <div class="card">
+          <h3>Scalloping</h3>
+          <p>Seasonal fun in Crystal River. Great for families.</p>
+        </div>
+        <div class="card">
+          <h3>Nearshore</h3>
+          <p>When conditions are right — more action, more variety.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="section alt">
+      <h2>Simple Pricing</h2>
+      <ul class="pricing">
+        <li><strong>Half Day (4 hrs):</strong> $___</li>
+        <li><strong>3/4 Day (6 hrs):</strong> $___</li>
+        <li><strong>Full Day (8 hrs):</strong> $___</li>
+      </ul>
+      <p class="note">Licenses, gear, bait included (edit this to match your offer).</p>
+    </section>
+
+    <section id="gallery" class="section">
+      <h2>Gallery</h2>
+      <p>Add your photos later (we’ll make a real grid once you have images).</p>
+      <div class="gallery-placeholder">
+        <div></div><div></div><div></div><div></div>
+      </div>
+    </section>
+
+    <section id="contact" class="section alt">
+      <h2>Book a Trip</h2>
+      <p>Text or call: <a href="tel:+1XXXXXXXXXX">(XXX) XXX-XXXX</a> • Email: <a href="mailto:you@example.com">you@example.com</a></p>
+
+      <form class="form" action="https://formspree.io/f/yourFormId" method="POST">
+        <input name="name" placeholder="Name" required />
+        <input name="phone" placeholder="Phone" required />
+        <input name="date" placeholder="Preferred Date" />
+        <textarea name="message" placeholder="What trip are you looking for?" rows="4"></textarea>
+        <button class="btn big" type="submit">Send</button>
+      </form>
+
+      <p class="note">Tip: replace the Formspree link when you’re ready (or remove the form).</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© <span id="year"></span> North South Charters • Crystal River, Florida</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

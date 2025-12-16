@@ -1,0 +1,76 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #0b1720; }
+a { color: inherit; text-decoration: none; }
+
+.hero {
+  min-height: 70vh;
+  padding: 22px;
+  background: linear-gradient(120deg, #08304a, #0b6b7a);
+  color: white;
+}
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 18px; max-width: 1100px; margin: 0 auto;
+}
+.logo { font-weight: 800; letter-spacing: 0.2px; }
+.links { display: flex; gap: 16px; align-items: center; }
+
+.btn {
+  display: inline-block;
+  padding: 10px 14px;
+  background: white;
+  color: #08304a;
+  border-radius: 10px;
+  font-weight: 700;
+}
+.btn.big { padding: 12px 18px; border-radius: 12px; }
+
+.hero-content {
+  max-width: 1100px; margin: 70px auto 0;
+}
+.hero-content h1 { font-size: 44px; margin: 0 0 10px; }
+.hero-content p { font-size: 18px; opacity: 0.95; margin: 0 0 18px; }
+
+.section { padding: 55px 22px; }
+.section.alt { background: #f3f6f8; }
+.section h2 { max-width: 1100px; margin: 0 auto 18px; }
+
+.cards {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.card {
+  background: white; border-radius: 14px; padding: 18px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.07);
+}
+
+.pricing { max-width: 1100px; margin: 0 auto; padding-left: 18px; }
+.note { max-width: 1100px; margin: 10px auto 0; opacity: 0.8; }
+
+.gallery-placeholder {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.gallery-placeholder div {
+  height: 120px; border-radius: 14px; background: #dbe6ee;
+}
+
+.form {
+  max-width: 650px; margin: 18px auto 0;
+  display: grid; gap: 10px;
+}
+input, textarea {
+  width: 100%; padding: 12px 12px;
+  border-radius: 12px; border: 1px solid #c9d7e2;
+  font-size: 16px;
+}
+
+.footer { padding: 20px 22px; text-align: center; background: #0b1720; color: white; }
+
+@media (max-width: 900px) {
+  .cards { grid-template-columns: 1fr; }
+  .gallery-placeholder { grid-template-columns: repeat(2, 1fr); }
+  .hero-content h1 { font-size: 34px; }
+}
