@@ -5,11 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>North South Charters | Crystal River, FL</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="images/logo-icon.png" />
 </head>
+
 <body>
   <header class="hero">
     <nav class="nav">
-      <div class="logo">North South Charters</div>
+      <a class="brand" href="#">
+        <img class="brand-mark" src="images/logo-icon.png" alt="North South Charters logo" />
+        <img class="brand-wordmark" src="images/logo-horizontal.png" alt="North South Charters" />
+      </a>
+
       <div class="links">
         <a href="#trips">Trips</a>
         <a href="#pricing">Pricing</a>
@@ -21,30 +27,58 @@
     <div class="hero-content">
       <h1>Crystal River Fishing Charters</h1>
       <p>Inshore • Nearshore • Scalloping • Family-friendly trips</p>
-      <a class="btn big" href="#contact">Check Availability</a>
+
+      <div class="hero-cta">
+        <a class="btn big" href="#contact">Check Availability</a>
+        <a class="btn outline big" href="#gallery">View Gallery</a>
+      </div>
+
+      <img class="hero-logo" src="images/logo-horizontal.png" alt="North South Charters" />
     </div>
   </header>
 
   <main>
+    <!-- TRIPS -->
     <section id="trips" class="section">
       <h2>Trips</h2>
+
       <div class="cards">
-        <div class="card">
+        <button class="card card-link" type="button" data-trip="inshore">
           <h3>Inshore Fishing</h3>
           <p>Redfish, trout, snook — perfect for all skill levels.</p>
-        </div>
-        <div class="card">
+        </button>
+
+        <button class="card card-link" type="button" data-trip="scalloping">
           <h3>Scalloping</h3>
           <p>Seasonal fun in Crystal River. Great for families.</p>
-        </div>
-        <div class="card">
-          <h3>Nearshore</h3>
+        </button>
+
+        <button class="card card-link" type="button" data-trip="nearshore">
+          <h3>Nearshore Fishing</h3>
           <p>When conditions are right — more action, more variety.</p>
+        </button>
+      </div>
+    </section>
+
+    <!-- SINGLE TRIP PANEL (only shows when a trip is clicked) -->
+    <section id="trip-details" class="section alt">
+      <h2>Trip Details</h2>
+
+      <div class="trip-panel" id="tripPanel" hidden>
+        <h3 id="tripTitle">Trip Title</h3>
+        <p id="tripDesc">Trip description goes here.</p>
+
+        <ul id="tripList" class="trip-list"></ul>
+
+        <div class="trip-panel-actions">
+          <a id="tripBtn" href="#contact" class="btn big">Book This Trip</a>
+          <button id="closeTrip" class="btn big outline-dark" type="button">Close</button>
         </div>
       </div>
     </section>
 
-    <section id="pricing" class="section alt">
+    <!-- PRICING -->
+    <section id="pricing" class="section">
       <h2>Simple Pricing</h2>
       <ul class="pricing">
         <li><strong>Half Day (4 hrs):</strong> $___</li>
@@ -54,17 +88,77 @@
       <p class="note">Licenses, gear, bait included (edit this to match your offer).</p>
     </section>
 
-    <section id="gallery" class="section">
-      <h2>Gallery</h2>
-      <p>Add your photos later (we’ll make a real grid once you have images).</p>
-      <div class="gallery-placeholder">
-        <div></div><div></div><div></div><div></div>
+    <!-- GALLERY -->
+    <section id="gallery" class="section alt">
+      <h2>Recent Trips & Catches</h2>
+
+      <!-- Preview (shows 3) -->
+      <div class="gallery gallery-preview">
+        <img src="images/aj1.jpeg" alt="Fishing charter trip" />
+        <img src="images/cobia1.jpeg" alt="Cobia catch" />
+        <img src="images/grouper1.jpeg" alt="Grouper catch" />
+      </div>
+
+      <!-- Button container (moves to bottom when expanded) -->
+      <div id="galleryActions" class="gallery-actions">
+        <button id="toggleGallery" class="btn big" type="button" aria-expanded="false">
+          View All Photos
+        </button>
+      </div>
+
+  <!-- Full gallery (hidden until button click) -->
+  <div id="fullGallery" class="gallery gallery-full" hidden>
+        <img src="images/grouper2.jpeg" alt="Grouper catch" />
+        <img src="images/grouper3.jpeg" alt="Grouper catch" />
+        <img src="images/grouper4.jpeg" alt="Grouper catch" />
+        <img src="images/grouper5.jpeg" alt="Grouper catch" />
+        <img src="images/grouper6.jpeg" alt="Grouper catch" />
+        <img src="images/grouper7.jpeg" alt="Grouper catch" />
+        <img src="images/grouper8.jpeg" alt="Grouper catch" />
+        <img src="images/grouper9.jpeg" alt="Grouper catch" />
+        <img src="images/grouper10.jpeg" alt="Grouper catch" />
+        <img src="images/grouper11.jpeg" alt="Grouper catch" />
+        <img src="images/grouper12.jpeg" alt="Grouper catch" />
+
+        <img src="images/hog1.jpeg" alt="Hogfish catch" />
+        <img src="images/mac1.jpeg" alt="Mackerel catch" />
+
+        <img src="images/redfish1.jpeg" alt="Redfish catch" />
+        <img src="images/redfish2.jpeg" alt="Redfish catch" />
+        <img src="images/redfish3.jpeg" alt="Redfish catch" />
+        <img src="images/redfish4.jpeg" alt="Redfish catch" />
+        <img src="images/redfish5.jpeg" alt="Redfish catch" />
+        <img src="images/redfish6.jpeg" alt="Redfish catch" />
+        <img src="images/redfish7.jpeg" alt="Redfish catch" />
+        <img src="images/redfish8.jpeg" alt="Redfish catch" />
+        <img src="images/redfish9.jpeg" alt="Redfish catch" />
+        <img src="images/redfish10.jpeg" alt="Redfish catch" />
+        <img src="images/redfish11.jpeg" alt="Redfish catch" />
+        <img src="images/redfish12.jpeg" alt="Redfish catch" />
+        <img src="images/redfish13.jpeg" alt="Redfish catch" />
+        <img src="images/redfish14.jpeg" alt="Redfish catch" />
+        <img src="images/redfish15.jpeg" alt="Redfish catch" />
+
+        <img src="images/snook1.jpeg" alt="Snook catch" />
+        <img src="images/snook2.jpeg" alt="Snook catch" />
+        <img src="images/snook3.jpeg" alt="Snook catch" />
+        <img src="images/snook4.jpeg" alt="Snook catch" />
+        <img src="images/snook5.jpeg" alt="Snook catch" />
+        <img src="images/snook6.jpeg" alt="Snook catch" />
+
+        <img src="images/trout1.jpeg" alt="Speckled trout catch" />
+        <img src="images/trout2.jpeg" alt="Speckled trout catch" />
+        <img src="images/trout3.jpeg" alt="Speckled trout catch" />
       </div>
     </section>
 
-    <section id="contact" class="section alt">
+     <!-- CONTACT -->
+    <section id="contact" class="section">
       <h2>Book a Trip</h2>
-      <p>Text or call: <a href="tel:+1XXXXXXXXXX">(XXX) XXX-XXXX</a> • Email: <a href="mailto:you@example.com">you@example.com</a></p>
+      <p style="text-align:center;">
+        Text or call: <a href="tel:+1XXXXXXXXXX">(XXX) XXX-XXXX</a> •
+        Email: <a href="mailto:you@example.com">you@example.com</a>
+      </p>
 
       <form class="form" action="https://formspree.io/f/yourFormId" method="POST">
         <input name="name" placeholder="Name" required />
@@ -81,6 +175,14 @@
   <footer class="footer">
     <p>© <span id="year"></span> North South Charters • Crystal River, Florida</p>
   </footer>
+
+  <!-- Lightbox (must be ABOVE script.js) -->
+  <div id="lightbox" class="lightbox" aria-hidden="true">
+    <button class="lightbox-btn lightbox-close" aria-label="Close">&times;</button>
+    <button class="lightbox-btn lightbox-prev" aria-label="Previous">&#10094;</button>
+    <img id="lightbox-img" alt="" />
+    <button class="lightbox-btn lightbox-next" aria-label="Next">&#10095;</button>
+  </div>
 
   <script src="script.js"></script>
 </body>

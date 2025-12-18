@@ -1,76 +1,531 @@
-* { box-sizing: border-box; }
-body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #0b1720; }
-a { color: inherit; text-decoration: none; }
+:root{
+  /* Brand palette from your logo */
+  --brand-navy: #205090;
+  --brand-sky: #5898E8;
+  --brand-sky-soft: #5098D0;
+  --brand-gold: #D8A860;
+  --brand-gold-deep: #D89848;
 
-.hero {
+  --text: #0b1720;
+  --surface: #f6f7f9;
+  --surface-alt: #eef1f5;
+
+  /* Responsive scale tokens */
+  --container: 1100px;
+  --pad: clamp(16px, 3vw, 26px);
+
+  --h1: clamp(30px, 5vw, 54px);
+  --h2: clamp(22px, 3vw, 32px);
+  --p: clamp(16px, 1.6vw, 18px);
+
+  --radius: 14px;
+  --shadow-sm: 0 8px 22px rgba(0,0,0,0.07);
+  --shadow-md: 0 12px 28px rgba(0,0,0,0.18);
+}
+
+/* Base reset */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text);
+  background: var(--surface);
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; height: auto; display: block; }
+
+/* HERO */
+.hero{
   min-height: 70vh;
-  padding: 22px;
-  background: linear-gradient(120deg, #08304a, #0b6b7a);
+  padding: var(--pad);
+  background: linear-gradient(120deg, var(--brand-navy), #0b1720);
   color: white;
 }
-.nav {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 18px; max-width: 1100px; margin: 0 auto;
+
+/* NAV */
+.nav{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  max-width: var(--container);
+  margin: 0 auto;
 }
-.logo { font-weight: 800; letter-spacing: 0.2px; }
-.links { display: flex; gap: 16px; align-items: center; }
 
-.btn {
-  display: inline-block;
-  padding: 10px 14px;
-  background: white;
-  color: #08304a;
-  border-radius: 10px;
-  font-weight: 700;
+/* Brand (logo) */
+.brand{
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
-.btn.big { padding: 12px 18px; border-radius: 12px; }
 
-.hero-content {
-  max-width: 1100px; margin: 70px auto 0;
+.brand-mark{
+  height: clamp(38px, 4vw, 46px);
+  width: auto;
 }
-.hero-content h1 { font-size: 44px; margin: 0 0 10px; }
-.hero-content p { font-size: 18px; opacity: 0.95; margin: 0 0 18px; }
 
-.section { padding: 55px 22px; }
-.section.alt { background: #f3f6f8; }
-.section h2 { max-width: 1100px; margin: 0 auto 18px; }
+.brand-wordmark{
+  height: clamp(28px, 3.5vw, 36px);
+  width: auto;
+}
 
-.cards {
-  max-width: 1100px; margin: 0 auto;
-  display: grid; grid-template-columns: repeat(3, 1fr);
+/* Nav links */
+.links{
+  display: flex;
   gap: 16px;
-}
-.card {
-  background: white; border-radius: 14px; padding: 18px;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.07);
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
-.pricing { max-width: 1100px; margin: 0 auto; padding-left: 18px; }
-.note { max-width: 1100px; margin: 10px auto 0; opacity: 0.8; }
+.links a{
+  opacity: 0.95;
+  font-weight: 600;
+}
+.links a:hover{
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
 
-.gallery-placeholder {
-  max-width: 1100px; margin: 0 auto;
-  display: grid; grid-template-columns: repeat(4, 1fr);
+/* BUTTONS */
+.btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 10px 14px;
+  min-height: 44px;
+  background: var(--brand-gold);
+  color: #0b1720;
+  border-radius: 12px;
+  font-weight: 800;
+
+  border: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.btn:hover{ background: var(--brand-gold-deep); }
+
+.btn.big{
+  padding: 12px 18px;
+  border-radius: 14px;
+}
+
+.btn.outline{
+  background: transparent;
+  color: white;
+  border: 2px solid rgba(255,255,255,0.55);
+}
+.btn.outline:hover{
+  background: rgba(255,255,255,0.12);
+}
+
+/* HERO CONTENT */
+.hero-content{
+  max-width: var(--container);
+  margin: clamp(44px, 7vw, 80px) auto 0;
+  text-align: center;
+}
+
+.hero-content h1{
+  font-size: var(--h1);
+  margin: 0 0 10px;
+  line-height: 1.05;
+}
+
+.hero-content p{
+  font-size: var(--p);
+  opacity: 0.95;
+  margin: 0 0 18px;
+  text-align: center;
+}
+
+.hero-cta{
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-logo{
+  margin-top: 18px;
+  max-width: min(520px, 90vw);
+  width: 100%;
+  opacity: 0.95;
+  filter: drop-shadow(0 10px 24px rgba(0,0,0,0.35));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* SECTIONS */
+.section{
+  padding: clamp(40px, 6vw, 70px) var(--pad);
+}
+
+.section.alt{
+  background: var(--surface-alt);
+}
+
+.section h2{
+  max-width: var(--container);
+  margin: 0 auto 18px;
+  color: var(--brand-navy);
+  font-size: var(--h2);
+  text-align: center;
+}
+
+/* CARDS */
+.cards{
+  max-width: var(--container);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  text-align: center;
+}
+
+.card{
+  background: white;
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(88,152,232,0.25);
+}
+
+.card h3{
+  margin: 0 0 8px;
+  color: var(--brand-navy);
+  text-align: center;
+}
+
+/* Clickable trip cards */
+.card-link{
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+}
+.card-link:hover{
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* PRICING + NOTE */
+.pricing{
+  max-width: var(--container);
+  margin: 0 auto;
+  padding-left: 18px;
+  font-size: var(--p);
+  text-align: center;
+  list-style-position: inside;
+}
+
+.note{
+  max-width: var(--container);
+  margin: 10px auto 0;
+  opacity: 0.8;
+  font-size: clamp(14px, 1.4vw, 16px);
+  text-align: center;
+}
+
+/* SINGLE TRIP DETAILS PANEL */
+.trip-panel{
+  max-width: 900px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(32,80,144,0.18);
+  border-radius: 18px;
+  padding: clamp(18px, 3vw, 26px);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+/* --- Background photo support (only when --trip-bg is set) --- */
+.trip-panel{
+  position: relative;
+  overflow: hidden;
+}
+
+/* background image layer */
+.trip-panel::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--trip-bg, none);
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.03);
+  filter: saturate(1.05) contrast(1.05);
+  z-index: 0;
+}
+
+/* overlay: transparent when no bg, dark when bg exists */
+.trip-panel::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  z-index: 0;
+}
+
+/* when a background is set, add readable overlay + white text */
+.trip-panel.has-bg{
+  color: white;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+.trip-panel.has-bg::after{
+  background: linear-gradient(
+    135deg,
+    rgba(11,23,32,0.85),
+    rgba(11,23,32,0.55)
+  );
+}
+
+/* keep content above layers */
+.trip-panel > *{
+  position: relative;
+  z-index: 1;
+}
+
+.trip-panel h3{
+  margin: 0 0 8px;
+  color: var(--brand-navy);
+  font-size: clamp(20px, 2.4vw, 26px);
+}
+
+/* heading becomes white when photo bg is active */
+.trip-panel.has-bg h3{
+  color: white;
+}
+
+.trip-panel p{
+  margin: 0 auto 14px;
+  max-width: 70ch;
+  font-size: var(--p);
+}
+
+.trip-list{
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.trip-list li{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.trip-list li::before{
+  content: "✓";
+  color: var(--brand-navy);
+  font-weight: 900;
+}
+
+.trip-panel.has-bg .trip-list li::before{
+  color: var(--brand-gold);
+}
+
+.trip-panel-actions{
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Dark outline button (for Close) */
+.outline-dark{
+  background: transparent;
+  color: var(--brand-navy);
+  border: 2px solid rgba(32,80,144,0.45);
+}
+
+.outline-dark:hover{
+  background: rgba(32,80,144,0.10);
+}
+
+/* Close button style when background is active */
+.trip-panel.has-bg .outline-dark{
+  color: white;
+  border: 2px solid rgba(255,255,255,0.55);
+}
+.trip-panel.has-bg .outline-dark:hover{
+  background: rgba(255,255,255,0.12);
+}
+
+/* GALLERY (shared) */
+.gallery{
+  max-width: var(--container);
+  margin: 0 auto;
+
+  display: grid;
+  gap: 12px;
+
+  grid-template-columns: repeat(auto-fill, minmax(clamp(140px, 40vw, 240px), 1fr));
+}
+
+.gallery img{
+  width: 100%;
+  height: clamp(150px, 22vw, 230px);
+  object-fit: cover;
+
+  border-radius: var(--radius);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+  border: 1px solid rgba(32,80,144,0.18);
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+}
+
+.gallery img:hover{
+  transform: scale(1.03);
+  box-shadow: var(--shadow-md);
+}
+
+/* Preview: make it feel intentional (3-up on desktop) */
+.gallery-preview{
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.gallery-preview img{
+  height: clamp(180px, 24vw, 280px);
+}
+
+/* Full gallery spacing + divider */
+.gallery-full{
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(32,80,144,0.18);
+}
+
+/* Force hidden gallery to stay hidden no matter what */
+#fullGallery[hidden]{
+  display: none !important;
+}
+
+/* Toggle button area */
+.gallery-actions{
+  max-width: var(--container);
+  margin: 22px auto 0;
+  display: flex;
+  justify-content: center;
+}
+
+#toggleGallery{
+  box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+}
+
+/* FORM */
+.form{
+  max-width: min(650px, 100%);
+  margin: 18px auto 0;
+  display: grid;
   gap: 10px;
 }
-.gallery-placeholder div {
-  height: 120px; border-radius: 14px; background: #dbe6ee;
-}
 
-.form {
-  max-width: 650px; margin: 18px auto 0;
-  display: grid; gap: 10px;
-}
-input, textarea {
-  width: 100%; padding: 12px 12px;
-  border-radius: 12px; border: 1px solid #c9d7e2;
+input, textarea{
+  width: 100%;
+  padding: 12px 12px;
+  min-height: 44px;
+  border-radius: 12px;
+  border: 1px solid #c9d7e2;
   font-size: 16px;
 }
 
-.footer { padding: 20px 22px; text-align: center; background: #0b1720; color: white; }
+input:focus, textarea:focus{
+  outline: none;
+  border-color: rgba(88,152,232,0.85);
+  box-shadow: 0 0 0 4px rgba(88,152,232,0.22);
+}
 
-@media (max-width: 900px) {
-  .cards { grid-template-columns: 1fr; }
-  .gallery-placeholder { grid-template-columns: repeat(2, 1fr); }
-  .hero-content h1 { font-size: 34px; }
+/* FOOTER */
+.footer{
+  padding: 20px var(--pad);
+  text-align: center;
+  background: #0b1720;
+  color: white;
+}
+
+.footer a{ color: var(--brand-gold); }
+
+/* LIGHTBOX */
+.lightbox{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 9999;
+}
+
+.lightbox.open{ display: flex; }
+
+.lightbox img{
+  max-width: min(1100px, 96vw);
+  max-height: 86vh;
+  border-radius: var(--radius);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+}
+
+.lightbox-btn{
+  position: absolute;
+  border: none;
+  background: rgba(32,80,144,0.35);
+  color: white;
+  font-size: 34px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+.lightbox-btn:hover{ background: rgba(32,80,144,0.55); }
+.lightbox-close{ top: 18px; right: 18px; }
+.lightbox-prev{ left: 18px; }
+.lightbox-next{ right: 18px; }
+
+/* RESPONSIVE BREAKPOINTS */
+@media (max-width: 900px){
+  .cards{ grid-template-columns: 1fr; }
+  .brand-wordmark{ display: none; }
+}
+
+@media (max-width: 520px){
+  .links{
+    width: 100%;
+    justify-content: center;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 760px){
+  .gallery-preview{
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px){
+  .lightbox img{ max-height: 78vh; }
+  .lightbox-prev{ left: 10px; }
+  .lightbox-next{ right: 10px; }
+  .lightbox-close{ top: 10px; right: 10px; }
+
+  .lightbox-btn{
+    width: 46px;
+    height: 46px;
+    font-size: 28px;
+  }
 }
