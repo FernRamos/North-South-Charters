@@ -38,24 +38,46 @@ img { max-width: 100%; height: auto; display: block; }
 
 /* HERO */
 .hero{
-  min-height: 70vh;
+  min-height: 78vh;
   padding: var(--pad);
-  background: linear-gradient(120deg, var(--brand-navy), #0b1720);
-  color: white;
+  color: #fff;
+
+  /* richer background */
+  background:
+    radial-gradient(900px 500px at 18% 20%, rgba(88,152,232,0.35), transparent 60%),
+    radial-gradient(700px 420px at 82% 30%, rgba(216,168,96,0.22), transparent 60%),
+    linear-gradient(120deg, var(--brand-navy), #0b1720);
+
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-cta .btn{
+  box-shadow: 0 18px 38px rgba(0,0,0,0.28);
+}
+
+.btn.outline{
+  border: 2px solid rgba(255,255,255,0.60);
+  background: rgba(255,255,255,0.08);
+}
+
+.btn.outline:hover{
+  background: rgba(255,255,255,0.14);
 }
 
 /* NAV */
 .nav{
   display: flex;
-  align-items: center;
+  align-items: center; /* THIS is the key */
   justify-content: space-between;
-  gap: 18px;
-  flex-wrap: wrap;
-  max-width: var(--container);
-  margin: 0 auto;
+  min-height: 72px;    /* gives breathing room */
+}
+.nav-left{
+  display: flex;
+  align-items: center;
+  padding-left: 6px;
 }
 
-/* Brand (logo) */
 .brand{
   display: flex;
   align-items: center;
@@ -63,13 +85,16 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 .brand-mark{
-  height: clamp(38px, 4vw, 46px);
+  height: 44px;
   width: auto;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,0.35));
 }
 
 .brand-wordmark{
-  height: clamp(28px, 3.5vw, 36px);
+  height: 30px;
   width: auto;
+  opacity: 0.95;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,0.25));
 }
 
 /* Nav links */
@@ -155,13 +180,27 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 .hero-logo{
-  margin-top: 18px;
-  max-width: min(520px, 90vw);
+  margin: 26px auto 0;
+  max-width: min(720px, 92vw);
   width: 100%;
   opacity: 0.95;
-  filter: drop-shadow(0 10px 24px rgba(0,0,0,0.35));
-  margin-left: auto;
-  margin-right: auto;
+
+  /* makes it feel embedded */
+  filter: drop-shadow(0 18px 48px rgba(0,0,0,0.45));
+
+  /* optional: soften edges on dark backgrounds */
+  transform: translateY(6px);
+}
+.hero-logo-wrap{
+  max-width: min(760px, 92vw);
+  margin: 24px auto 0;
+  padding: 18px 18px;
+
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 22px;
+
+  backdrop-filter: blur(8px);
 }
 
 /* ABOUT */
@@ -446,6 +485,34 @@ img { max-width: 100%; height: auto; display: block; }
   margin: 0 0 8px;
   color: var(--brand-navy);
   text-align: center;
+}
+
+/* Make Trips cards match Purpose cards in size/weight */
+.cards{
+  align-items: stretch;               /* ensure equal-height cards */
+}
+
+.card{
+  height: 100%;                       /* fill grid cell */
+  min-height: 165px;                  /* match purpose-card “presence” */
+  padding: 20px 18px;                 /* slightly beefier */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Soft section transition divider (Purpose -> Trips) */
+.section-transition{
+  max-width: var(--container);
+  margin: 26px auto 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(32,80,144,0.22),
+    transparent
+  );
 }
 
 /* Clickable trip cards */
@@ -792,6 +859,23 @@ input:focus, textarea:focus{
 .lightbox-prev{ left: 18px; }
 .lightbox-next{ right: 18px; }
 
+/* Tighten space between Trips and Trip Details */
+#trips{
+  padding-bottom: clamp(20px, 3vw, 32px);
+}
+
+#trip-details{
+  padding-top: clamp(20px, 3vw, 32px);
+}
+
+#trip-details{
+  padding-bottom: clamp(20px, 3vw, 32px);
+}
+
+#pricing{
+  padding-top: clamp(20px, 3vw, 32px);
+}
+
 /* RESPONSIVE BREAKPOINTS */
 @media (max-width: 900px){
   .cards{ grid-template-columns: 1fr; }
@@ -821,4 +905,227 @@ input:focus, textarea:focus{
     height: 46px;
     font-size: 28px;
   }
+}
+
+/* SOCIAL LINKS (top left) */
+.social-links{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.social-links a{
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255,255,255,0.08);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.social-links a:hover{
+  background: rgba(216,168,96,0.25);
+  transform: translateY(-2px);
+}
+
+.social-links img{
+  width: 22px;
+  height: 22px;
+
+  /* MAGIC: converts white SVG to brand gold */
+  filter: brightness(0) saturate(100%)
+          invert(73%) sepia(32%) saturate(540%)
+          hue-rotate(355deg) brightness(95%) contrast(92%);
+}
+
+/* =========================
+   LIVE CONDITIONS (Premium look)
+========================= */
+
+.conditions-grid{
+  max-width: var(--container);
+  margin: 0 auto;
+  display: grid;
+  gap: clamp(16px, 3vw, 28px);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cond-card{
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(32,80,144,0.14);
+  border-radius: 22px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  position: relative;
+}
+
+.cond-card::before{
+  content:"";
+  position:absolute;
+  inset: 0 0 auto 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--brand-gold), var(--brand-sky));
+  opacity: 0.9;
+}
+
+.cond-head{
+  padding: 18px 18px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cond-head h3{
+  margin: 0;
+  color: var(--brand-navy);
+  font-size: clamp(18px, 2vw, 22px);
+}
+
+.cond-block{
+  padding: 12px 18px 18px;
+  border-top: 1px solid rgba(32,80,144,0.10);
+}
+
+.cond-block h4{
+  margin: 0 0 10px;
+  color: rgba(11,23,32,0.78);
+  font-size: 13px;
+  letter-spacing: 0.35px;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+/* Weather layout */
+.weather{
+  background: rgba(246,247,249,0.85);
+  border: 1px solid rgba(32,80,144,0.12);
+  border-radius: 18px;
+  padding: 14px;
+}
+
+.weather-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.weather-main{
+  display: grid;
+  gap: 4px;
+}
+
+.weather-temp{
+  font-size: clamp(30px, 3vw, 42px);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--brand-navy);
+}
+
+.weather-desc{
+  font-size: 14px;
+  color: rgba(11,23,32,0.76);
+  font-weight: 700;
+}
+
+.weather-icon{
+  width: 64px;
+  height: 64px;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.12));
+}
+
+.weather-meta{
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Pills */
+.pill{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(216,168,96,0.18);
+  border: 1px solid rgba(216,168,96,0.35);
+  font-weight: 800;
+  color: rgba(11,23,32,0.75);
+}
+.pill strong{ color: var(--brand-navy); }
+
+/* Tides */
+.tides{
+  background: rgba(246,247,249,0.85);
+  border: 1px solid rgba(32,80,144,0.12);
+  border-radius: 18px;
+  padding: 14px;
+  display: grid;
+  gap: 6px;
+  font-weight: 800;
+  color: rgba(11,23,32,0.78);
+}
+
+.cond-mini-note{
+  margin-top: 10px;
+  font-size: 12px;
+  color: rgba(11,23,32,0.60);
+}
+
+/* Solunar iframe */
+.solunar-frame{
+  width: 100%;
+  min-height: 240px;
+  border: 1px solid rgba(32,80,144,0.12);
+  border-radius: 18px;
+  background: rgba(246,247,249,0.85);
+}
+
+/* Map area */
+.map-wrap{
+  max-width: var(--container);
+  margin: clamp(18px, 3vw, 26px) auto 0;
+  background: rgba(255,255,255,0.90);
+  border: 1px solid rgba(32,80,144,0.14);
+  border-radius: 24px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.map-head{
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(32,80,144,0.10);
+  flex-wrap: wrap;
+}
+
+.map-head h3{
+  margin: 0;
+  color: var(--brand-navy);
+  font-size: clamp(18px, 2vw, 22px);
+}
+
+.map-actions{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.map{
+  height: clamp(280px, 40vw, 440px);
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 900px){
+  .conditions-grid{ grid-template-columns: 1fr; }
+  .weather-icon{ width: 56px; height: 56px; }
 }
