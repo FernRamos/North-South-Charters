@@ -1059,6 +1059,43 @@ input:focus, textarea:focus{
 }
 .pill strong{ color: var(--brand-navy); }
 
+/* ===== Tide Chart (NOAA) ===== */
+.tide-chart{
+  margin-top: 12px;
+  background: rgba(246,247,249,0.85);
+  border: 1px solid rgba(32,80,144,0.12);
+  border-radius: 18px;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.tide-chart svg{
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.tide-chart .tc-title{
+  font-weight: 900;
+  color: var(--brand-navy);
+  font-size: 13px;
+  margin: 0 0 10px;
+  opacity: 0.9;
+}
+
+.tide-chart .tc-sub{
+  font-size: 12px;
+  color: rgba(11,23,32,0.65);
+  margin: -6px 0 10px;
+}
+
+.tide-chart .tc-fallback{
+  font-weight: 800;
+  color: rgba(11,23,32,0.7);
+  padding: 10px 0;
+  text-align: center;
+}
+
 /* Tides */
 .tides{
   background: rgba(246,247,249,0.85);
