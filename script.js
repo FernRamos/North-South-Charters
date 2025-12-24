@@ -4,9 +4,9 @@
 // - Footer year
 // - Gallery expand/collapse
 // - Trips panel + pricing sync
-// - Lightbox
+// - Lightbox (photos only)
 // - Captain sliders
-// - Live Conditions: Weather (OWM), Tides (NOAA Hi/Lo + Chart), Map (Leaflet)
+// - Live Conditions: Weather (OWM), Tides (NOAA Hi/Lo only), Map (Leaflet)
 // ============================
 
 // 1) OpenWeatherMap API key
@@ -18,17 +18,26 @@ const OWM_API_KEY = "9dc589a002537bec0e0f701720b675a1";
 const LOCATIONS = {
   crystal: {
     label: "Crystal River Launch",
-    lat: 28.8559,
-    lon: -82.6413,
+    lat: 28.903462209723877,
+    lon: -82.63467354383404,
     address: "12073 W Fort Island Trl, Crystal River, FL 34429-9215",
-    noaaStationId: "8727343"
+    noaaStationId: "8727333"
   },
   tampa: {
     label: "Tampa Launch",
-    lat: 27.8937,
-    lon: -82.5266,
+    lat: 27.89240448830268,
+    lon: -82.53328635333908,
     address: "5108 W Gandy Blvd, Tampa, FL 33611",
     noaaStationId: "8726607"
+  },
+  tarpon: {
+    label: "Tarpon Springs Launch",
+    // your coords:
+    lat: 28.17626333833187,
+    lon: -82.78866363820713,
+    address: "Tarpon Springs, FL",
+    // North Anclote Key station you found:
+    noaaStationId: "8726942"
   }
 };
 
@@ -50,8 +59,11 @@ function addDays(date, days){
 
 function parseNoaaDateTime(s){
   // NOAA returns "YYYY-MM-DD HH:MM"
-  // We'll parse as local time (good enough for display + relative filtering).
   return new Date(s.replace(" ", "T"));
+}
+
+function fmtTime(dt){
+  return dt.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 }
 
 /* =========================
@@ -62,7 +74,6 @@ async function loadWeather(key, targetId){
   const box = document.getElementById(targetId);
   if (!loc || !box) return;
 
-  // If user hasn't set key
   if (!OWM_API_KEY || OWM_API_KEY === "PASTE_YOUR_OPENWEATHER_KEY_HERE"){
     const descEl = box.querySelector(".weather-desc");
     if (descEl) descEl.textContent = "Add your OpenWeatherMap API key to show live weather.";
@@ -98,9 +109,8 @@ async function loadWeather(key, targetId){
 }
 
 /* =========================
-   TIDES (NOAA)
-   - Hi/Lo list (next events)
-   - Tide chart (next 24h)
+   TIDES (NOAA) — HI/LO ONLY
+   Fix: pull today + tomorrow so we always find "next" event
 ========================= */
 async function loadTidesHilo(key, targetId){
   const loc = LOCATIONS[key];
@@ -108,8 +118,9 @@ async function loadTidesHilo(key, targetId){
   if (!loc || !el) return;
 
   try{
-    const begin = yyyymmddLocal(new Date());
-    const end = begin;
+    const now = new Date();
+    const begin = yyyymmddLocal(now);
+    const end = yyyymmddLocal(addDays(now, 1)); // <-- key fix
 
     const url =
       `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter` +
@@ -122,135 +133,37 @@ async function loadTidesHilo(key, targetId){
     if (!res.ok) throw new Error("Tides request failed");
     const data = await res.json();
 
-    const preds = data.predictions || [];
+    const preds = (data.predictions || [])
+      .map(p => ({ ...p, dt: parseNoaaDateTime(p.t), vNum: Number(p.v) }))
+      .filter(p => p.dt instanceof Date && !isNaN(p.dt) && Number.isFinite(p.vNum))
+      .sort((a,b) => a.dt - b.dt);
+
     if (!preds.length){
-      el.textContent = "No tide predictions found for today.";
+      el.textContent = "No tide predictions found.";
       return;
     }
 
-    const now = new Date();
-    const upcoming = preds
-      .map(p => ({ ...p, dt: parseNoaaDateTime(p.t) }))
-      .filter(p => p.dt >= now)
-      .slice(0, 4);
+    const upcoming = preds.filter(p => p.dt >= now);
 
-    if (!upcoming.length){
-      el.textContent = "No more tide events today.";
+    const nextHigh = upcoming.find(p => p.type === "H");
+    const nextLow  = upcoming.find(p => p.type === "L");
+
+    if (!nextHigh && !nextLow){
+      el.textContent = "No upcoming tide events found.";
       return;
     }
 
-    el.innerHTML = upcoming.map(p => {
-      const type = (p.type === "H") ? "High" : "Low";
-      const time = p.t.split(" ")[1];
-      return `<div>• <strong>${type}</strong> @ ${time} — ${p.v} ft</div>`;
-    }).join("");
+    const parts = [];
+    if (nextHigh){
+      parts.push(`• <strong>High</strong> @ ${fmtTime(nextHigh.dt)} — ${nextHigh.vNum.toFixed(2)} ft`);
+    }
+    if (nextLow){
+      parts.push(`• <strong>Low</strong> @ ${fmtTime(nextLow.dt)} — ${nextLow.vNum.toFixed(2)} ft`);
+    }
+
+    el.innerHTML = parts.map(x => `<div>${x}</div>`).join("");
   }catch(err){
     el.textContent = "Tides unavailable right now.";
-  }
-}
-
-function buildTideChartSVG(points, label){
-  // points: [{dt: Date, v: number}]
-  const W = 700;
-  const H = 180;
-  const PAD_X = 26;
-  const PAD_Y = 18;
-
-  const vs = points.map(p => p.v);
-  const minV = Math.min(...vs);
-  const maxV = Math.max(...vs);
-
-  const span = (maxV - minV) || 1;
-
-  const x0 = points[0].dt.getTime();
-  const x1 = points[points.length - 1].dt.getTime();
-  const xSpan = (x1 - x0) || 1;
-
-  const mapX = (t) => PAD_X + ((t - x0) / xSpan) * (W - PAD_X * 2);
-  const mapY = (v) => PAD_Y + (1 - ((v - minV) / span)) * (H - PAD_Y * 2);
-
-  const poly = points.map(p => `${mapX(p.dt.getTime()).toFixed(1)},${mapY(p.v).toFixed(1)}`).join(" ");
-
-  // Area fill down to baseline
-  const baseY = PAD_Y + (H - PAD_Y * 2);
-  const area = `${poly} ${mapX(x1).toFixed(1)},${baseY.toFixed(1)} ${mapX(x0).toFixed(1)},${baseY.toFixed(1)}`;
-
-  // ticks (simple)
-  const leftLabel = points[0].dt.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-  const rightLabel = points[points.length - 1].dt.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-
-  return `
-    <div class="tc-title">${label}</div>
-    <div class="tc-sub">Next 24 hours (NOAA prediction)</div>
-    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${label} tide chart">
-      <defs>
-        <linearGradient id="tideFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="rgba(216,168,96,0.35)"></stop>
-          <stop offset="100%" stop-color="rgba(88,152,232,0.10)"></stop>
-        </linearGradient>
-      </defs>
-
-      <!-- baseline -->
-      <line x1="${PAD_X}" y1="${baseY}" x2="${W - PAD_X}" y2="${baseY}" stroke="rgba(32,80,144,0.18)" stroke-width="2"/>
-
-      <!-- area -->
-      <polygon points="${area}" fill="url(#tideFill)"></polygon>
-
-      <!-- line -->
-      <polyline points="${poly}" fill="none" stroke="rgba(32,80,144,0.9)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline>
-
-      <!-- min/max labels -->
-      <text x="${PAD_X}" y="${PAD_Y + 10}" font-size="12" fill="rgba(11,23,32,0.65)">Max: ${maxV.toFixed(1)} ft</text>
-      <text x="${PAD_X}" y="${H - 10}" font-size="12" fill="rgba(11,23,32,0.65)">Min: ${minV.toFixed(1)} ft</text>
-
-      <!-- time labels -->
-      <text x="${PAD_X}" y="${H - 10}" text-anchor="start" font-size="12" fill="rgba(11,23,32,0.55)">${leftLabel}</text>
-      <text x="${W - PAD_X}" y="${H - 10}" text-anchor="end" font-size="12" fill="rgba(11,23,32,0.55)">${rightLabel}</text>
-    </svg>
-  `;
-}
-
-async function loadTideChart(key, chartId){
-  const loc = LOCATIONS[key];
-  const el = document.getElementById(chartId);
-  if (!loc || !el) return;
-
-  try{
-    const now = new Date();
-    const begin = yyyymmddLocal(now);
-    const end = yyyymmddLocal(addDays(now, 1)); // next day to cover next 24h
-
-    // Hourly predictions for chart
-    const url =
-      `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter` +
-      `?product=predictions&application=NSCharters` +
-      `&begin_date=${begin}&end_date=${end}` +
-      `&datum=MLLW&station=${loc.noaaStationId}` +
-      `&time_zone=lst_ldt&units=english&interval=60&format=json`;
-
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("Tide chart request failed");
-    const data = await res.json();
-
-    const preds = (data.predictions || [])
-      .map(p => ({ dt: parseNoaaDateTime(p.t), v: Number(p.v) }))
-      .filter(p => Number.isFinite(p.v));
-
-    if (!preds.length){
-      el.innerHTML = `<div class="tc-fallback">No chart data available.</div>`;
-      return;
-    }
-
-    // next 24 hours window
-    const endWindow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-    const windowPts = preds.filter(p => p.dt >= now && p.dt <= endWindow);
-
-    // If filtering leaves too little, fallback to first N points
-    const pts = windowPts.length >= 6 ? windowPts : preds.slice(0, 24);
-
-    el.innerHTML = buildTideChartSVG(pts, `${LOCATIONS[key].label} — Tide Chart`);
-  }catch(err){
-    el.innerHTML = `<div class="tc-fallback">Tide chart unavailable right now.</div>`;
   }
 }
 
@@ -262,22 +175,27 @@ let map, markers = {};
 function initMap(){
   if (!window.L) return;
 
-  const centerLat = (LOCATIONS.crystal.lat + LOCATIONS.tampa.lat) / 2;
-  const centerLon = (LOCATIONS.crystal.lon + LOCATIONS.tampa.lon) / 2;
+  // Auto-center using all locations
+  const keys = Object.keys(LOCATIONS);
+  const avgLat = keys.reduce((s,k) => s + LOCATIONS[k].lat, 0) / keys.length;
+  const avgLon = keys.reduce((s,k) => s + LOCATIONS[k].lon, 0) / keys.length;
 
-  map = L.map("map", { scrollWheelZoom: false }).setView([centerLat, centerLon], 9);
+  map = L.map("map", { scrollWheelZoom: false }).setView([avgLat, avgLon], 8);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
 
-  markers.crystal = L.marker([LOCATIONS.crystal.lat, LOCATIONS.crystal.lon]).addTo(map)
-    .bindPopup(`<strong>${LOCATIONS.crystal.label}</strong><br/>${LOCATIONS.crystal.address}`);
+  const markerList = [];
 
-  markers.tampa = L.marker([LOCATIONS.tampa.lat, LOCATIONS.tampa.lon]).addTo(map)
-    .bindPopup(`<strong>${LOCATIONS.tampa.label}</strong><br/>${LOCATIONS.tampa.address}`);
+  keys.forEach((key) => {
+    const loc = LOCATIONS[key];
+    markers[key] = L.marker([loc.lat, loc.lon]).addTo(map)
+      .bindPopup(`<strong>${loc.label}</strong><br/>${loc.address || ""}`);
+    markerList.push(markers[key]);
+  });
 
-  const group = L.featureGroup([markers.crystal, markers.tampa]);
+  const group = L.featureGroup(markerList);
   map.fitBounds(group.getBounds().pad(0.25));
 }
 
@@ -432,7 +350,6 @@ function initTripsAndPricing(){
     });
   }
 
-  // Default on load
   renderTrip("inshore", { scrollToPanel: false });
 }
 
@@ -444,15 +361,21 @@ function initLightbox(){
   const btnPrev = document.querySelector(".lightbox-prev");
   const btnNext = document.querySelector(".lightbox-next");
 
-  if (!galleryImages.length || !lightbox || !lightboxImg || !btnClose || !btnPrev || !btnNext) return;
+  if (!lightbox || !lightboxImg || !btnClose || !btnPrev || !btnNext) return;
 
   let currentIndex = 0;
 
   function openLightbox(index) {
     currentIndex = index;
     const img = galleryImages[currentIndex];
+
+    lightboxImg.style.display = "";
+    btnPrev.removeAttribute("hidden");
+    btnNext.removeAttribute("hidden");
+
     lightboxImg.src = img.src;
     lightboxImg.alt = img.alt || "Gallery image";
+
     lightbox.classList.add("open");
     lightbox.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
@@ -512,25 +435,50 @@ function initCaptainSliders(){
 }
 
 /* =========================
-   BOOT
+   BOOT (safe)
 ========================= */
 window.addEventListener("DOMContentLoaded", () => {
-  initFooterYear();
-  initGalleryToggle();
-  initTripsAndPricing();
-  initLightbox();
-  initCaptainSliders();
+  const safe = (name, fn) => {
+    try { fn(); }
+    catch (e) { console.error(`[BOOT] ${name} failed:`, e); }
+  };
 
-  // Live Conditions
-  loadWeather("crystal", "weather-crystal");
-  loadWeather("tampa", "weather-tampa");
+  safe("initFooterYear", () => typeof initFooterYear === "function" && initFooterYear());
+  safe("initGalleryToggle", () => typeof initGalleryToggle === "function" && initGalleryToggle());
+  safe("initTripsAndPricing", () => typeof initTripsAndPricing === "function" && initTripsAndPricing());
+  safe("initLightbox", () => typeof initLightbox === "function" && initLightbox());
+  safe("initCaptainSliders", () => typeof initCaptainSliders === "function" && initCaptainSliders());
 
-  loadTidesHilo("crystal", "tides-crystal");
-  loadTidesHilo("tampa", "tides-tampa");
+  safe("loadWeather crystal", () => typeof loadWeather === "function" && loadWeather("crystal", "weather-crystal"));
+  safe("loadWeather tampa",   () => typeof loadWeather === "function" && loadWeather("tampa", "weather-tampa"));
+  safe("loadWeather tarpon",  () => typeof loadWeather === "function" && loadWeather("tarpon", "weather-tarpon"));
 
-  loadTideChart("crystal", "tidechart-crystal");
-  loadTideChart("tampa", "tidechart-tampa");
+  safe("loadTidesHilo crystal", () => typeof loadTidesHilo === "function" && loadTidesHilo("crystal", "tides-crystal"));
+  safe("loadTidesHilo tampa",   () => typeof loadTidesHilo === "function" && loadTidesHilo("tampa", "tides-tampa"));
+  safe("loadTidesHilo tarpon",  () => typeof loadTidesHilo === "function" && loadTidesHilo("tarpon", "tides-tarpon"));
 
-  initMap();
-  wireFocusButtons();
+  // ✅ INIT MAP
+  safe("initMap", () => typeof initMap === "function" && initMap());
+
+  // ✅ FIX 1: force resize after layout settles
+  setTimeout(() => {
+    if (map) map.invalidateSize();
+  }, 200);
+
+  // ✅ FIX 2: force resize again when map scrolls into view
+  const mapEl = document.getElementById("map");
+  if (mapEl && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some(e => e.isIntersecting)) {
+        setTimeout(() => {
+          if (map) map.invalidateSize();
+        }, 50);
+        io.disconnect();
+      }
+    }, { threshold: 0.2 });
+
+    io.observe(mapEl);
+  }
+
+  safe("wireFocusButtons", () => typeof wireFocusButtons === "function" && wireFocusButtons());
 });

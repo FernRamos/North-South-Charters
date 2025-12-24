@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" href="images/logo-icon.png" />
 
-  <!-- Leaflet CSS (map) — belongs in HEAD -->
+  <!-- Leaflet CSS (map) -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -48,6 +48,7 @@
   </header>
 
   <main>
+    <!-- ABOUT -->
     <section id="about" class="section alt">
       <h2>Meet Your Captains</h2>
 
@@ -91,7 +92,8 @@
         <h3 class="purpose-title">Our Purpose</h3>
 
         <p class="purpose-lead">
-          We want every trip to be a great day on the water — and to keep Crystal River and Tampa Bay fishing healthy for the next generation.
+          We want every trip to be a great day on the water — and to keep Crystal River, Tampa Bay, and the Anclote area fishing healthy
+          for the next generation.
         </p>
 
         <div class="purpose-grid">
@@ -125,11 +127,14 @@
       </div>
     </section>
 
+    <!-- LIVE CONDITIONS -->
     <section id="conditions" class="section alt">
       <h2>Live Conditions</h2>
 
+      <!-- ✅ IMPORTANT: Tarpon card MUST be inside .conditions-grid -->
       <div class="conditions-grid">
-        <!-- Location 1 -->
+
+        <!-- Location 1: Crystal River -->
         <article class="cond-card" data-loc="crystal">
           <header class="cond-head">
             <h3>Crystal River</h3>
@@ -156,17 +161,13 @@
           </div>
 
           <div class="cond-block">
-          <h4>Tides (Next High/Low + Chart)</h4>
+            <h4>Tides (Next High/Low + Chart)</h4>
             <div class="tides" id="tides-crystal">Loading tides…</div>
-
-          <!-- NEW: Tide chart -->
-        <div class="tide-chart" id="tidechart-crystal" aria-label="Tide chart (next 24 hours)"></div>
-
-          <div class="cond-mini-note">Powered by NOAA tides & currents.</div>
+            <div class="cond-mini-note">Powered by NOAA tides & currents.</div>
           </div>
         </article>
 
-        <!-- Location 2 -->
+        <!-- Location 2: Tampa Bay -->
         <article class="cond-card" data-loc="tampa">
           <header class="cond-head">
             <h3>Tampa Bay</h3>
@@ -193,16 +194,46 @@
           </div>
 
           <div class="cond-block">
-          <h4>Tides (Next High/Low + Chart)</h4>
+            <h4>Tides (Next High/Low + Chart)</h4>
             <div class="tides" id="tides-tampa">Loading tides…</div>
-
-            <!-- NEW: Tide chart -->
-            <div class="tide-chart" id="tidechart-tampa" aria-label="Tide chart (next 24 hours)"></div>
-
             <div class="cond-mini-note">Powered by NOAA tides & currents.</div>
           </div>
         </article>
-      </div>
+
+        <!-- Location 3: Tarpon Springs / North Anclote -->
+        <article class="cond-card" data-loc="tarpon">
+          <header class="cond-head">
+            <h3>Tarpon Springs</h3>
+            <button class="btn outline-dark btn-small" type="button" data-focus="tarpon">
+              View on Map
+            </button>
+          </header>
+
+          <div class="cond-block">
+            <h4>Weather</h4>
+            <div class="weather" id="weather-tarpon">
+              <div class="weather-row">
+                <div class="weather-main">
+                  <div class="weather-temp">—</div>
+                  <div class="weather-desc">Loading weather…</div>
+                </div>
+                <img class="weather-icon" alt="" />
+              </div>
+              <div class="weather-meta">
+                <span class="pill">Wind: <strong class="w-wind">—</strong></span>
+                <span class="pill">Feels: <strong class="w-feels">—</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cond-block">
+            <h4>Tides (Next High/Low + Chart)</h4>
+            <div class="tides" id="tides-tarpon">Loading tides…</div>
+            <div class="cond-mini-note">Powered by NOAA tides & currents.</div>
+          </div>
+        </article>
+
+      </div><!-- /.conditions-grid -->
 
       <div class="map-wrap">
         <div class="map-head">
@@ -210,6 +241,7 @@
           <div class="map-actions">
             <button class="btn outline-dark btn-small" type="button" data-focus="crystal">Crystal River</button>
             <button class="btn outline-dark btn-small" type="button" data-focus="tampa">Tampa Bay</button>
+            <button class="btn outline-dark btn-small" type="button" data-focus="tarpon">Tarpon Springs</button>
           </div>
         </div>
 
@@ -295,9 +327,73 @@
       </div>
 
       <div id="fullGallery" class="gallery gallery-full" hidden>
-        <!-- your images unchanged -->
         <img src="images/cobia2.jpeg" alt="Cobia catch" />
-        <!-- ... keep the rest exactly as you have them ... -->
+        <img src="images/grouper2.jpeg" alt="Grouper catch" />
+        <img src="images/grouper3.jpeg" alt="Grouper catch" />
+        <img src="images/grouper4.jpeg" alt="Grouper catch" />
+        <img src="images/grouper5.jpeg" alt="Grouper catch" />
+        <img src="images/grouper6.jpeg" alt="Grouper catch" />
+        <img src="images/grouper7.jpeg" alt="Grouper catch" />
+        <img src="images/grouper8.jpeg" alt="Grouper catch" />
+        <img src="images/grouper9.jpeg" alt="Grouper catch" />
+        <img src="images/grouper10.jpeg" alt="Grouper catch" />
+        <img src="images/grouper11.jpeg" alt="Grouper catch" />
+        <img src="images/grouper12.jpeg" alt="Grouper catch" />
+        <img src="images/grouper13.jpeg" alt="Grouper catch" />
+        <img src="images/grouper14.jpeg" alt="Grouper catch" />
+        <img src="images/grouper15.jpeg" alt="Grouper catch" />
+
+        <img src="images/hog1.jpeg" alt="Hogfish catch" />
+        <img src="images/mac1.jpeg" alt="Mackerel catch" />
+        <img src="images/mac2.jpeg" alt="Mackerel catch" />
+        <img src="images/manatee1.jpeg" alt="Manatee Pic" />
+        <img src="images/manatee2.jpeg" alt="Manatee Pic" />
+
+        <img src="images/mix-bag1.jpeg" alt="Mix Bag" />
+        <img src="images/mix-bag2.jpeg" alt="Mix Bag" />
+        <img src="images/pelican1.jpeg" alt="Pelican Pic" />
+
+        <img src="images/redfish1.jpeg" alt="Redfish catch" />
+        <img src="images/redfish2.jpeg" alt="Redfish catch" />
+        <img src="images/redfish3.jpeg" alt="Redfish catch" />
+        <img src="images/redfish4.jpeg" alt="Redfish catch" />
+        <img src="images/redfish5.jpeg" alt="Redfish catch" />
+        <img src="images/redfish6.jpeg" alt="Redfish catch" />
+        <img src="images/redfish7.jpeg" alt="Redfish catch" />
+        <img src="images/redfish8.jpeg" alt="Redfish catch" />
+        <img src="images/redfish9.jpeg" alt="Redfish catch" />
+        <img src="images/redfish10.jpeg" alt="Redfish catch" />
+        <img src="images/redfish11.jpeg" alt="Redfish catch" />
+        <img src="images/redfish12.jpeg" alt="Redfish catch" />
+        <img src="images/redfish13.jpeg" alt="Redfish catch" />
+        <img src="images/redfish14.jpeg" alt="Redfish catch" />
+        <img src="images/redfish15.jpeg" alt="Redfish catch" />
+        <img src="images/redfish16.jpeg" alt="Redfish catch" />
+        <img src="images/redfish17.jpeg" alt="Redfish catch" />
+        <img src="images/redfish18.jpeg" alt="Redfish catch" />
+        <img src="images/redfish19.jpeg" alt="Redfish catch" />
+        <img src="images/redfish20.jpeg" alt="Redfish catch" />
+        <img src="images/redfish21.jpeg" alt="Redfish catch" />
+        <img src="images/redfish22.jpeg" alt="Redfish catch" />
+        <img src="images/redfish23.jpeg" alt="Redfish catch" />
+
+        <img src="images/scallop1.jpeg" alt="Scallop Catch" />
+        <img src="images/shark1.jpeg" alt="Shark Pic" />
+
+        <img src="images/snook1.jpeg" alt="Snook catch" />
+        <img src="images/snook2.jpeg" alt="Snook catch" />
+        <img src="images/snook3.jpeg" alt="Snook catch" />
+        <img src="images/snook4.jpeg" alt="Snook catch" />
+        <img src="images/snook5.jpeg" alt="Snook catch" />
+        <img src="images/snook6.jpeg" alt="Snook catch" />
+        <img src="images/snook7.jpeg" alt="Snook catch" />
+        <img src="images/snook8.jpeg" alt="Snook catch" />
+        <img src="images/snook9.jpeg" alt="Snook catch" />
+        <img src="images/snook10.jpeg" alt="Snook catch" />
+
+        <img src="images/trout1.jpeg" alt="Speckled trout catch" />
+        <img src="images/trout2.jpeg" alt="Speckled trout catch" />
+        <img src="images/trout3.jpeg" alt="Speckled trout catch" />
         <img src="images/trout4.jpeg" alt="Speckled trout catch" />
       </div>
     </section>
@@ -336,7 +432,7 @@
     <button class="lightbox-btn lightbox-next" aria-label="Next">&#10095;</button>
   </div>
 
-  <!-- Leaflet JS — should be BEFORE your script.js -->
+  <!-- Leaflet JS (must be before script.js) -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <!-- Your main JS -->

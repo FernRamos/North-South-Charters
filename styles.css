@@ -1033,9 +1033,16 @@ input:focus, textarea:focus{
 }
 
 .weather-icon{
-  width: 64px;
-  height: 64px;
-  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.12));
+  width: 58px;
+  height: 58px;
+
+  /* make it pop */
+  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(32,80,144,0.14);
+  border-radius: 14px;
+  padding: 6px;
+
+  box-shadow: 0 10px 24px rgba(0,0,0,0.10);
 }
 
 .weather-meta{
@@ -1062,10 +1069,10 @@ input:focus, textarea:focus{
 /* ===== Tide Chart (NOAA) ===== */
 .tide-chart{
   margin-top: 12px;
-  background: rgba(246,247,249,0.85);
-  border: 1px solid rgba(32,80,144,0.12);
+  background: rgba(246,247,249,0.92);
+  border: 1px solid rgba(32,80,144,0.14);
   border-radius: 18px;
-  padding: 12px;
+  padding: 14px 14px 10px;
   overflow: hidden;
 }
 
@@ -1078,15 +1085,14 @@ input:focus, textarea:focus{
 .tide-chart .tc-title{
   font-weight: 900;
   color: var(--brand-navy);
-  font-size: 13px;
-  margin: 0 0 10px;
-  opacity: 0.9;
+  font-size: 15px;
+  margin: 0 0 6px;
 }
 
 .tide-chart .tc-sub{
-  font-size: 12px;
-  color: rgba(11,23,32,0.65);
-  margin: -6px 0 10px;
+  font-size: 13px;
+  color: rgba(11,23,32,0.70);
+  margin: 0 0 10px;
 }
 
 .tide-chart .tc-fallback{
@@ -1096,31 +1102,87 @@ input:focus, textarea:focus{
   text-align: center;
 }
 
-/* Tides */
-.tides{
-  background: rgba(246,247,249,0.85);
-  border: 1px solid rgba(32,80,144,0.12);
-  border-radius: 18px;
-  padding: 14px;
+.tides-pills{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tide-pill{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: rgba(88,152,232,0.08);
+  border: 1px solid rgba(32,80,144,0.14);
+  font-weight: 800;
+  color: rgba(11,23,32,0.86);
+}
+
+.tide-pill strong{
+  color: var(--brand-navy);
+}
+
+.tide-pill.high{
+  background: rgba(216,168,96,0.18);
+  border-color: rgba(216,168,96,0.38);
+}
+
+.tide-pill.low{
+  background: rgba(88,152,232,0.10);
+}
+
+.tides-text{
   display: grid;
   gap: 6px;
-  font-weight: 800;
-  color: rgba(11,23,32,0.78);
+  font-weight: 700;
+  color: rgba(11,23,32,0.85);
 }
 
-.cond-mini-note{
-  margin-top: 10px;
-  font-size: 12px;
-  color: rgba(11,23,32,0.60);
+.tides-text strong{
+  color: var(--brand-navy);
 }
 
-/* Solunar iframe */
-.solunar-frame{
+
+
+/* Tides */
+/* Tide chart click-to-expand */
+.tidechart-btn{
   width: 100%;
-  min-height: 240px;
-  border: 1px solid rgba(32,80,144,0.12);
-  border-radius: 18px;
-  background: rgba(246,247,249,0.85);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.tidechart-btn:focus{
+  outline: none;
+}
+
+.tidechart-btn:focus-visible{
+  outline: 3px solid rgba(88,152,232,0.35);
+  outline-offset: 6px;
+}
+
+.tidechart{
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Make the SVG scale nicely in its card */
+.tidechart svg{
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Optional: subtle hover so people know it's clickable */
+.tidechart-btn:hover .tidechart{
+  box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+  transform: translateY(-1px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* Map area */
@@ -1165,4 +1227,18 @@ input:focus, textarea:focus{
 @media (max-width: 900px){
   .conditions-grid{ grid-template-columns: 1fr; }
   .weather-icon{ width: 56px; height: 56px; }
+}
+/* Leaflet fix: don't let global img rules break map tiles */
+.leaflet-container img,
+.leaflet-container .leaflet-tile,
+.leaflet-container .leaflet-marker-icon,
+.leaflet-container .leaflet-marker-shadow{
+  max-width: none !important;
+  height: auto; /* keep your site defaults from messing with Leaflet sizing */
+}
+#map img,
+#map .leaflet-tile,
+#map .leaflet-marker-icon,
+#map .leaflet-marker-shadow{
+  max-width: none !important;
 }
