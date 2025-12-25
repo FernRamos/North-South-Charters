@@ -172,6 +172,13 @@ async function loadTidesHilo(key, targetId){
 ========================= */
 let map, markers = {};
 
+const launchIcon = L.icon({
+  iconUrl: "images/logo-icon-no-words.png",
+  iconSize: [36, 36],
+  iconAnchor: [21, 42],
+  popupAnchor: [0, -42]
+});
+
 function initMap(){
   if (!window.L) return;
 
@@ -190,8 +197,8 @@ function initMap(){
 
   keys.forEach((key) => {
     const loc = LOCATIONS[key];
-    markers[key] = L.marker([loc.lat, loc.lon]).addTo(map)
-      .bindPopup(`<strong>${loc.label}</strong><br/>${loc.address || ""}`);
+    markers[key] = L.marker([loc.lat, loc.lon], { icon: launchIcon }).addTo(map)
+    .bindPopup(`<strong>${loc.label}</strong><br/>${loc.address || ""}`);
     markerList.push(markers[key]);
   });
 
@@ -287,6 +294,20 @@ function initTripsAndPricing(){
       bg: "images/grouper1.jpeg",
       prices: { half: "From $500", full: "From $700" },
       pricingNote: "Nearshore trips are weather dependent — we’ll confirm conditions before launch."
+    },
+    island: {
+      title: "Island Hopping",
+      desc: "A relaxed day exploring islands, sandbars, and clear water spots — perfect for families, couples, and groups looking to cruise, swim, and unwind.",
+      bullets: [
+        "Island + sandbar stops (conditions permitting)",
+        "Great for families & groups",
+        "Swimming/snorkeling-friendly vibes",
+        "Cooler space for drinks & snacks"
+      ],
+      btn: "Book Island Hopping",
+      bg: "images/shark1.jpeg", // swap to your best “island day” photo if you have one
+      prices: { half: "$400", full: "$600" }, // change these to your real numbers
+      pricingNote: "Island hopping is weather/tide dependent — we’ll confirm the best spots before launch."
     }
   };
 
