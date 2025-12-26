@@ -9,12 +9,13 @@
 // - Live Conditions: Weather (OWM), Tides (NOAA Hi/Lo only), Map (Leaflet)
 // ============================
 
-// 1) OpenWeatherMap API key
+// ✅ SECURITY NOTE (recommended):
+// Do NOT ship your real OpenWeather API key in public GitHub Pages.
+// Put it in a simple proxy later if you want. For now, you asked to keep OWM.
+
 const OWM_API_KEY = "9dc589a002537bec0e0f701720b675a1";
 
 // 2) Locations
-// NOTE: lat/lon here are LAUNCH locations (map).
-// NOAA station IDs are used ONLY for tides.
 const LOCATIONS = {
   crystal: {
     label: "Crystal River Launch",
@@ -32,11 +33,9 @@ const LOCATIONS = {
   },
   tarpon: {
     label: "Tarpon Springs Launch",
-    // your coords:
     lat: 28.17626333833187,
     lon: -82.78866363820713,
     address: "Tarpon Springs, FL",
-    // North Anclote Key station you found:
     noaaStationId: "8726942"
   }
 };
@@ -110,7 +109,6 @@ async function loadWeather(key, targetId){
 
 /* =========================
    TIDES (NOAA) — HI/LO ONLY
-   Fix: pull today + tomorrow so we always find "next" event
 ========================= */
 async function loadTidesHilo(key, targetId){
   const loc = LOCATIONS[key];
@@ -120,7 +118,7 @@ async function loadTidesHilo(key, targetId){
   try{
     const now = new Date();
     const begin = yyyymmddLocal(now);
-    const end = yyyymmddLocal(addDays(now, 1)); // <-- key fix
+    const end = yyyymmddLocal(addDays(now, 1)); // ✅ pull today + tomorrow
 
     const url =
       `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter` +
@@ -144,7 +142,6 @@ async function loadTidesHilo(key, targetId){
     }
 
     const upcoming = preds.filter(p => p.dt >= now);
-
     const nextHigh = upcoming.find(p => p.type === "H");
     const nextLow  = upcoming.find(p => p.type === "L");
 
@@ -172,17 +169,20 @@ async function loadTidesHilo(key, targetId){
 ========================= */
 let map, markers = {};
 
-const launchIcon = L.icon({
-  iconUrl: "images/logo-icon-no-words.png",
-  iconSize: [36, 36],
-  iconAnchor: [21, 42],
-  popupAnchor: [0, -42]
-});
+// ✅ Guard so this file doesn't explode if Leaflet isn't loaded yet
+const launchIcon = (window.L && typeof L.icon === "function")
+  ? L.icon({
+      iconUrl: "images/logo-icon-no-words.png",
+      iconSize: [36, 36],
+      // ✅ for a square icon: center-bottom feels like a pin
+      iconAnchor: [18, 36],
+      popupAnchor: [0, -34]
+    })
+  : null;
 
 function initMap(){
   if (!window.L) return;
 
-  // Auto-center using all locations
   const keys = Object.keys(LOCATIONS);
   const avgLat = keys.reduce((s,k) => s + LOCATIONS[k].lat, 0) / keys.length;
   const avgLon = keys.reduce((s,k) => s + LOCATIONS[k].lon, 0) / keys.length;
@@ -197,8 +197,13 @@ function initMap(){
 
   keys.forEach((key) => {
     const loc = LOCATIONS[key];
-    markers[key] = L.marker([loc.lat, loc.lon], { icon: launchIcon }).addTo(map)
-    .bindPopup(`<strong>${loc.label}</strong><br/>${loc.address || ""}`);
+
+    const markerOptions = launchIcon ? { icon: launchIcon } : undefined;
+
+    markers[key] = L.marker([loc.lat, loc.lon], markerOptions)
+      .addTo(map)
+      .bindPopup(`<strong>${loc.label}</strong><br/>${loc.address || ""}`);
+
     markerList.push(markers[key]);
   });
 
@@ -295,6 +300,8 @@ function initTripsAndPricing(){
       prices: { half: "From $500", full: "From $700" },
       pricingNote: "Nearshore trips are weather dependent — we’ll confirm conditions before launch."
     },
+
+    // ✅ NEW TRIP
     island: {
       title: "Island Hopping",
       desc: "A relaxed day exploring islands, sandbars, and clear water spots — perfect for families, couples, and groups looking to cruise, swim, and unwind.",
@@ -305,8 +312,8 @@ function initTripsAndPricing(){
         "Cooler space for drinks & snacks"
       ],
       btn: "Book Island Hopping",
-      bg: "images/shark1.jpeg", // swap to your best “island day” photo if you have one
-      prices: { half: "$400", full: "$600" }, // change these to your real numbers
+      bg: "images/shark1.jpeg", // swap to your best “island day” photo
+      prices: { half: "$400", full: "$600" }, // update to real numbers
       pricingNote: "Island hopping is weather/tide dependent — we’ll confirm the best spots before launch."
     }
   };
@@ -456,6 +463,31 @@ function initCaptainSliders(){
 }
 
 /* =========================
+   MAP RESIZE HELPERS
+========================= */
+function initMapResizeFix(){
+  // ✅ FIX 1: force resize after layout settles
+  setTimeout(() => {
+    if (map) map.invalidateSize();
+  }, 200);
+
+  // ✅ FIX 2: force resize again when map scrolls into view
+  const mapEl = document.getElementById("map");
+  if (mapEl && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some(e => e.isIntersecting)) {
+        setTimeout(() => {
+          if (map) map.invalidateSize();
+        }, 50);
+        io.disconnect();
+      }
+    }, { threshold: 0.2 });
+
+    io.observe(mapEl);
+  }
+}
+
+/* =========================
    BOOT (safe)
 ========================= */
 window.addEventListener("DOMContentLoaded", () => {
@@ -478,28 +510,9 @@ window.addEventListener("DOMContentLoaded", () => {
   safe("loadTidesHilo tampa",   () => typeof loadTidesHilo === "function" && loadTidesHilo("tampa", "tides-tampa"));
   safe("loadTidesHilo tarpon",  () => typeof loadTidesHilo === "function" && loadTidesHilo("tarpon", "tides-tarpon"));
 
-  // ✅ INIT MAP
+  // ✅ MAP INIT + RESIZE FIXES
   safe("initMap", () => typeof initMap === "function" && initMap());
-
-  // ✅ FIX 1: force resize after layout settles
-  setTimeout(() => {
-    if (map) map.invalidateSize();
-  }, 200);
-
-  // ✅ FIX 2: force resize again when map scrolls into view
-  const mapEl = document.getElementById("map");
-  if (mapEl && "IntersectionObserver" in window) {
-    const io = new IntersectionObserver((entries) => {
-      if (entries.some(e => e.isIntersecting)) {
-        setTimeout(() => {
-          if (map) map.invalidateSize();
-        }, 50);
-        io.disconnect();
-      }
-    }, { threshold: 0.2 });
-
-    io.observe(mapEl);
-  }
+  safe("initMapResizeFix", () => initMapResizeFix());
 
   safe("wireFocusButtons", () => typeof wireFocusButtons === "function" && wireFocusButtons());
 });
