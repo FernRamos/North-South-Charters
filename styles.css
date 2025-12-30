@@ -449,10 +449,11 @@ img { max-width: 100%; height: auto; display: block; }
 /* SECTIONS */
 .section{
   padding: clamp(40px, 6vw, 70px) var(--pad);
+  background: transparent; /* IMPORTANT: let global wash show everywhere */
 }
 
 .section.alt{
-  background: var(--surface-alt);
+  background: transparent; /* IMPORTANT: same as above */
 }
 
 .section h2{
@@ -510,7 +511,7 @@ img { max-width: 100%; height: auto; display: block; }
   background: linear-gradient(
     to right,
     transparent,
-    rgba(32,80,144,0.22),
+    rgba(32,80,144,0.14),
     transparent
   );
 }
@@ -611,13 +612,13 @@ img { max-width: 100%; height: auto; display: block; }
 .trip-panel{
   max-width: 900px;
   margin: 0 auto;
-  background: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,0.85);
   border: 1px solid rgba(32,80,144,0.18);
   border-radius: 18px;
   padding: clamp(18px, 3vw, 26px);
   box-shadow: var(--shadow-sm);
   text-align: center;
-
+  backdrop-filter: blur(6px);
   position: relative;
   overflow: hidden;
 }
@@ -652,8 +653,8 @@ img { max-width: 100%; height: auto; display: block; }
 .trip-panel.has-bg::after{
   background: linear-gradient(
     135deg,
-    rgba(11,23,32,0.85),
-    rgba(11,23,32,0.55)
+    rgba(11,23,32,0.65),
+    rgba(11,23,32,0.35)
   );
 }
 
@@ -1253,4 +1254,75 @@ input:focus, textarea:focus{
 }
 .launch-logo-icon {
   filter: drop-shadow(0 6px 10px rgba(0,0,0,0.35));
+}
+
+/* =========================
+   GLOBAL BACKGROUND SYSTEM
+========================= */
+body{
+  position: relative;
+  background: var(--surface);
+}
+
+/* contour image */
+body::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+
+  background: url("images/background.jpeg") center / cover no-repeat;
+  filter: saturate(0.8) brightness(1.05) contrast(0.95);
+}
+
+/* soft white wash OVER the contour */
+body::after{
+  content:"";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background: rgba(246,247,249,0.94); /* THIS is the key */
+}
+/* Make "alt" sections not block the global texture */
+.section.alt{
+  background: rgba(246,247,249,0.90);
+}
+
+/* Keep the actual content blocks readable */
+.card,
+.captain-card,
+.cond-card,
+.trip-panel,
+.pricing,
+.map-wrap{
+  background: rgba(255,255,255,0.92);
+}
+/* ===== FINAL GLOBAL TEXTURE OVERRIDES ===== */
+main{ background: transparent; }
+
+.section,
+.section.alt{
+  background: transparent !important;
+}
+
+/* global wash to keep texture subtle */
+body::after{
+  background: rgba(246,247,249,0.94) !important;
+}
+
+/* Trip panel: keep image, but stop it from “changing the page” */
+.trip-panel{
+  background: rgba(255,255,255,0.85) !important;
+  backdrop-filter: blur(6px);
+}
+
+.trip-panel.has-bg::after{
+  background: linear-gradient(
+    135deg,
+    rgba(11,23,32,0.65),
+    rgba(11,23,32,0.35)
+  ) !important;
 }
