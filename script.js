@@ -263,7 +263,7 @@ function initTripsAndPricing(){
   const tripData = {
     inshore: {
       title: "Inshore Fishing",
-      desc: "Our inshore trips target redfish, snook, trout, and other species in Crystal River’s flats and mangrove shorelines.",
+      desc: "Our inshore trips target redfish, snook, trout, and other species in the flats and mangrove shorelines.",
       bullets: [
         "Calm waters — great for kids and beginners",
         "Year-round availability",
@@ -276,7 +276,7 @@ function initTripsAndPricing(){
     },
     scalloping: {
       title: "Scalloping",
-      desc: "Experience one of Crystal River’s most unique adventures during scallop season. Perfect for families, groups, and first-timers.",
+      desc: "Experience one of the Nature Coast's most unique adventures during scallop season. Perfect for families, groups, and first-timers.",
       bullets: [
         "Seasonal (summer months)",
         "Snorkeling in clear Gulf waters",
