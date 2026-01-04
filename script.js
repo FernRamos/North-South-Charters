@@ -284,7 +284,7 @@ function initTripsAndPricing(){
       ],
       btn: "Book Scalloping Trip",
       bg: "images/scallop1.jpeg",
-      prices: { half: "$400", full: "$600" },
+      prices: { half: "$475", full: "$600" },
       pricingNote: "Scalloping is seasonal — ask about dates, tides, and group rates."
     },
     nearshore: {
@@ -297,7 +297,7 @@ function initTripsAndPricing(){
       ],
       btn: "Book Nearshore Trip",
       bg: "images/grouper1.jpeg",
-      prices: { half: "From $500", full: "From $700" },
+      prices: { half: "From $500", full: "From $800" },
       pricingNote: "Nearshore trips are weather dependent — we’ll confirm conditions before launch."
     },
 
@@ -313,7 +313,7 @@ function initTripsAndPricing(){
       ],
       btn: "Book Island Hopping",
       bg: "images/shark1.jpeg", // swap to your best “island day” photo
-      prices: { half: "$400", full: "$600" }, // update to real numbers
+      prices: { half: "$475", full: "$600" }, // update to real numbers
       pricingNote: "Island hopping is weather/tide dependent — we’ll confirm the best spots before launch."
     }
   };
