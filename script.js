@@ -9,10 +9,6 @@
 // - Live Conditions: Weather (OWM), Tides (NOAA Hi/Lo only), Map (Leaflet)
 // ============================
 
-// ✅ SECURITY NOTE (recommended):
-// Do NOT ship your real OpenWeather API key in public GitHub Pages.
-// Put it in a simple proxy later if you want. For now, you asked to keep OWM.
-
 const OWM_API_KEY = "9dc589a002537bec0e0f701720b675a1";
 
 // 2) Locations
@@ -35,7 +31,7 @@ const LOCATIONS = {
     label: "Tarpon Springs Launch",
     lat: 28.17626333833187,
     lon: -82.78866363820713,
-    address: "Tarpon Springs, FL",
+    address: "1119 Baillies Bluff Rd, Holiday, FL 34691-9749",
     noaaStationId: "8726942"
   }
 };
@@ -174,7 +170,6 @@ const launchIcon = (window.L && typeof L.icon === "function")
   ? L.icon({
       iconUrl: "images/logo-icon-no-words.png",
       iconSize: [36, 36],
-      // ✅ for a square icon: center-bottom feels like a pin
       iconAnchor: [18, 36],
       popupAnchor: [0, -34]
     })
@@ -197,7 +192,6 @@ function initMap(){
 
   keys.forEach((key) => {
     const loc = LOCATIONS[key];
-
     const markerOptions = launchIcon ? { icon: launchIcon } : undefined;
 
     markers[key] = L.marker([loc.lat, loc.lon], markerOptions)
@@ -259,6 +253,14 @@ function initGalleryToggle(){
   });
 }
 
+/* =========================
+   TRIPS + PRICING
+   ✅ NO view-pricing button added
+   ✅ Pricing title stays "Simple Pricing"
+   ✅ pricingSub updates to active trip
+   ✅ Active trip card gets .is-active-trip
+   ✅ No Close button dependency
+========================= */
 function initTripsAndPricing(){
   const tripData = {
     inshore: {
@@ -300,8 +302,6 @@ function initTripsAndPricing(){
       prices: { half: "From $500", full: "From $800" },
       pricingNote: "Nearshore trips are weather dependent — we’ll confirm conditions before launch."
     },
-
-    // ✅ NEW TRIP
     island: {
       title: "Island Hopping",
       desc: "A relaxed day exploring islands, sandbars, and clear water spots — perfect for families, couples, and groups looking to cruise, swim, and unwind.",
@@ -312,8 +312,8 @@ function initTripsAndPricing(){
         "Cooler space for drinks & snacks"
       ],
       btn: "Book Island Hopping",
-      bg: "images/shark1.jpeg", // swap to your best “island day” photo
-      prices: { half: "$475", full: "$600" }, // update to real numbers
+      bg: "images/shark1.jpeg",
+      prices: { half: "$475", full: "$600" },
       pricingNote: "Island hopping is weather/tide dependent — we’ll confirm the best spots before launch."
     }
   };
@@ -323,12 +323,30 @@ function initTripsAndPricing(){
   const tripDesc = document.getElementById("tripDesc");
   const tripList = document.getElementById("tripList");
   const tripBtn = document.getElementById("tripBtn");
-  const closeTrip = document.getElementById("closeTrip");
+
+  const pricingTitle = document.getElementById("pricingTitle");
+  const pricingSub   = document.getElementById("pricingSub");
+
   const tripButtons = document.querySelectorAll("[data-trip]");
 
   const priceHalf = document.getElementById("priceHalf");
   const priceFull = document.getElementById("priceFull");
   const pricingNote = document.getElementById("pricingNote");
+
+  function setPricingContext(tripTitleText){
+    // ✅ keep title stable
+    if (pricingTitle) pricingTitle.textContent = "Simple Pricing";
+    // ✅ make the context obvious
+    if (pricingSub) pricingSub.innerHTML = `Pricing for: <strong>${tripTitleText}</strong>`;
+  }
+
+  function setActiveTripButton(key){
+    tripButtons.forEach(btn => {
+      const isActive = btn.getAttribute("data-trip") === key;
+      btn.classList.toggle("is-active-trip", isActive);
+      btn.setAttribute("aria-current", isActive ? "true" : "false");
+    });
+  }
 
   function renderTrip(key, { scrollToPanel = false } = {}) {
     const data = tripData[key];
@@ -339,7 +357,7 @@ function initTripsAndPricing(){
 
     if (tripList) {
       tripList.innerHTML = "";
-      data.bullets.forEach((t) => {
+      (data.bullets || []).forEach((t) => {
         const li = document.createElement("li");
         li.textContent = t;
         tripList.appendChild(li);
@@ -354,9 +372,14 @@ function initTripsAndPricing(){
       tripPanel.removeAttribute("hidden");
     }
 
+    // ✅ Pricing sync
     if (priceHalf) priceHalf.textContent = data.prices?.half ?? "$___";
     if (priceFull) priceFull.textContent = data.prices?.full ?? "$___";
     if (pricingNote) pricingNote.textContent = data.pricingNote ?? "";
+
+    // ✅ Clear context + highlight
+    setPricingContext(data.title);
+    setActiveTripButton(key);
 
     if (scrollToPanel && tripPanel) {
       tripPanel.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -364,20 +387,18 @@ function initTripsAndPricing(){
   }
 
   tripButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      renderTrip(btn.getAttribute("data-trip"), { scrollToPanel: true });
-    });
+   btn.addEventListener("click", () => {
+  // micro-pop animation
+  btn.classList.remove("tap-pop");
+  // force reflow so animation can replay every tap
+  void btn.offsetWidth;
+  btn.classList.add("tap-pop");
+
+  renderTrip(btn.getAttribute("data-trip"), { scrollToPanel: true });
+});
   });
 
-  if (closeTrip && tripPanel) {
-    closeTrip.addEventListener("click", () => {
-      tripPanel.setAttribute("hidden", "");
-      tripPanel.style.removeProperty("--trip-bg");
-      tripPanel.classList.remove("has-bg");
-      document.getElementById("trips")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  }
-
+  // ✅ Default selection — AND default highlight
   renderTrip("inshore", { scrollToPanel: false });
 }
 
@@ -466,12 +487,10 @@ function initCaptainSliders(){
    MAP RESIZE HELPERS
 ========================= */
 function initMapResizeFix(){
-  // ✅ FIX 1: force resize after layout settles
   setTimeout(() => {
     if (map) map.invalidateSize();
   }, 200);
 
-  // ✅ FIX 2: force resize again when map scrolls into view
   const mapEl = document.getElementById("map");
   if (mapEl && "IntersectionObserver" in window) {
     const io = new IntersectionObserver((entries) => {
@@ -510,7 +529,6 @@ window.addEventListener("DOMContentLoaded", () => {
   safe("loadTidesHilo tampa",   () => typeof loadTidesHilo === "function" && loadTidesHilo("tampa", "tides-tampa"));
   safe("loadTidesHilo tarpon",  () => typeof loadTidesHilo === "function" && loadTidesHilo("tarpon", "tides-tarpon"));
 
-  // ✅ MAP INIT + RESIZE FIXES
   safe("initMap", () => typeof initMap === "function" && initMap());
   safe("initMapResizeFix", () => initMapResizeFix());
 

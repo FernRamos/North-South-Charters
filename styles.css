@@ -1267,3 +1267,102 @@ input:focus, textarea:focus{
     aspect-ratio: 16 / 9;
   }
 }
+/* Pricing context under the H2 */
+.pricing-sub{
+  margin: -10px auto 18px;
+  max-width: 760px;
+  text-align: center;
+  font-size: 15px;
+  color: rgba(11,23,32,0.72);
+}
+.pricing-sub strong{
+  color: var(--brand-navy);
+  font-weight: 900;
+}
+
+/* Mini CTA inside trip cards */
+.mini-cta{
+  margin: 12px auto 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(216,168,96,0.18);
+  border: 1px solid rgba(216,168,96,0.40);
+  color: rgba(11,23,32,0.82);
+  font-weight: 800;
+  font-size: 13px;
+}
+.card-link:hover .mini-cta{
+  background: rgba(216,168,96,0.28);
+  border-color: rgba(216,168,96,0.55);
+}
+
+/* Active Trip Card */
+.is-active-trip{
+  outline: 3px solid rgba(216,168,96,0.55);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+}
+
+/* =========================
+   TRIP CARD MICRO-ANIMATION
+========================= */
+
+/* Make the trip cards feel tappable */
+.card.card-link{
+  transition:
+    transform 120ms ease,
+    box-shadow 200ms ease,
+    outline-color 200ms ease;
+  transform: translateZ(0); /* helps on mobile */
+  will-change: transform;
+}
+
+/* Quick "pop" on press (mobile + desktop) */
+.card.card-link:active{
+  transform: scale(0.985);
+}
+
+/* Optional: tiny lift on hover (desktop only) */
+@media (hover: hover){
+  .card.card-link:hover{
+    transform: translateY(-3px);
+  }
+}
+
+/* Optional: a little extra pop on the active selected trip */
+.card.card-link.is-active-trip{
+  transform: translateY(-2px);
+}
+
+/* Tap pop animation */
+@keyframes tapPop{
+  0%   { transform: scale(1); }
+  45%  { transform: scale(0.985); }
+  100% { transform: scale(1); }
+}
+
+.card.card-link.tap-pop{
+  animation: tapPop 160ms ease;
+}
+
+/* Remove default focus/active outlines */
+.card.card-link{
+  outline: none;
+  -webkit-tap-highlight-color: transparent; /* iOS tap flash */
+}
+
+/* When focused via keyboard or tap, use gold outline */
+.card.card-link:focus,
+.card.card-link:focus-visible,
+.card.card-link:active{
+  outline: 3px solid rgba(216,168,96,0.45);
+  outline-offset: 3px;
+}
+
+/* Active selected trip stays gold */
+.card.card-link.is-active-trip{
+  outline: 3px solid rgba(216,168,96,0.55);
+  outline-offset: 2px;
+}
