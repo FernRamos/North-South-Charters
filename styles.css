@@ -1248,3 +1248,28 @@ input:focus, textarea:focus{
   border: 1px solid rgba(32,80,144,0.16) !important;
   box-shadow: 0 8px 22px rgba(0,0,0,0.07) !important;
 }
+/* =========================
+   GALLERY (mobile): make preview look great with only 3 photos
+   Paste at VERY bottom
+========================= */
+@media (max-width: 600px){
+  /* Preview: 1 big column */
+  .gallery.gallery-preview{
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    max-width: 520px;
+  }
+
+  /* Use aspect-ratio instead of a fixed height (prettier crops) */
+  .gallery.gallery-preview img{
+    height: auto !important;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 18px;
+  }
+
+  /* Button spacing */
+  .gallery-actions{
+    margin-top: 16px !important;
+  }
+}
